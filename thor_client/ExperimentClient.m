@@ -30,15 +30,27 @@ classdef ExperimentClient
                 'experiment_id', obj.experiment_id);
             res = webwrite(url, data, options);
         end
-        function rec = create_recommendation(obj)
+        function rec = create_recommendation(obj, rand_prob, n_model_iters)
             % Create a recommendation for a point to evaluate next.
+            if nargin < 3
+                % Make the number of model parameters null if it is not
+                % provided.
+                n_model_iters = string(nan);
+            end
+            if nargin < 2
+                % Make the probability of randomly choosing a configuration
+                % to evaluate null if it is not provided.
+                rand_prob = string(nan);
+            end
             options = weboptions('ContentType', 'json',                      ...
                 'MediaType', 'application/json',                             ...
                 'RequestMethod', 'POST',                                     ...
                 'Timeout', 180);
             url = base_url('create_recommendation');
             data = struct('auth_token', obj.auth_token,                      ...
-                'experiment_id', obj.experiment_id);
+                'experiment_id', obj.experiment_id,                          ...
+                'rand_prob', rand_prob,                                      ...
+                'n_model_iters', n_model_iters);
             res = webwrite(url, data, options);
             rec = RecommendationClient(res.id, jsondecode(res.config),       ...
                 obj.auth_token);

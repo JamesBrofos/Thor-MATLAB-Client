@@ -9,6 +9,11 @@ classdef ThorClient
         end
         function exp = create_experiment(obj, name, dimensions, acq_func)
             % Create an experiment.
+            if nargin < 4
+                % Make the specification of the acquisition function an
+                % optional parameter that defaults to the hedging strategy.
+                acq_func = 'hedge';
+            end
             options = weboptions('ContentType', 'json',                      ...
                 'MediaType', 'application/json',                             ...
                 'RequestMethod', 'POST');
