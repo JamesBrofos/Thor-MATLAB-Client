@@ -21,7 +21,7 @@ for i = 1:30
      % Evaluate the parameter recommendation.
      v = franke(c.x, c.y);
      % Submit the parameter recommendation's value.
-     %rec.submit_recommendation(v);
+     rec.submit_recommendation(v);
 end
 
 
