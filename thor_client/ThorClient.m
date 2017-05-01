@@ -38,14 +38,14 @@ classdef ThorClient
             % Parameters:
             %     name (str): String containing the name of the experiment
             %         to create.
-            %     dimensions (list of structs): A list of structs that specify 
-            %         the hyperparameters of the machine learning system. Each 
-            %         dimension must specify the following four properties: 
+            %     dimensions (list of structs): A list of structs that specify
+            %         the hyperparameters of the machine learning system. Each
+            %         dimension must specify the following four properties:
             %             1. The name of the dimension, which key "name".
             %             2. The type of dimension to create, which must be
             %                one of "linear", "exponential", "logarithmic", or
             %                "integer". This is specified by the key
-            %                "dim_type". 
+            %                "dim_type".
             %             3. The minimum value of the dimension, specified
             %                by the key "low".
             %             4. The maximum value of the dimension, specified by
