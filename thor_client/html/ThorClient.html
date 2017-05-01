@@ -1,0 +1,289 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>ThorClient</title><meta name="generator" content="MATLAB 9.2"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2017-05-01"><meta name="DC.source" content="ThorClient.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; } 
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, code { font-size:12px; }
+tt { font-size: 1.2em; }
+pre { margin:0px 0px 20px; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+pre.error { color:red; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+.footer a { color:#878787; }
+.footer a:hover { color:#878787; text-decoration:underline; }
+.footer a:visited { color:#878787; }
+
+table th { padding:7px 5px; text-align:left; vertical-align:middle; border: 1px solid #d6d4d4; font-weight:bold; }
+table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px solid #d6d4d4; }
+
+
+
+
+
+  </style></head><body><div class="content"><pre class="codeinput"><span class="keyword">classdef</span> ThorClient
+    <span class="comment">% Thor Client Class</span>
+    <span class="comment">%</span>
+    <span class="comment">% The purpose of this module is to allow MATLAB users to utilize the Thor</span>
+    <span class="comment">% utility for Bayesian optimization of machine learning systems. This module</span>
+    <span class="comment">% in particular is intended to properly authenticate with Thor and to create</span>
+    <span class="comment">% experiments.</span>
+    <span class="comment">%</span>
+    <span class="comment">% Parameters:</span>
+    <span class="comment">%     auth_token (str): String containing a user's specific API key provided</span>
+    <span class="comment">%         by the Thor server. This is used to authenticate with the Thor</span>
+    <span class="comment">%         server as a handshake that these experiments belong to a user and</span>
+    <span class="comment">%         can be viewed and edited by them.</span>
+    <span class="comment">%</span>
+    <span class="comment">% Examples:</span>
+    <span class="comment">%     The Thor Client can be used to create experiments as follows:</span>
+    <span class="comment">%</span>
+    <span class="comment">%     &gt;&gt; tc = ThorClient('YOUR_API_KEY');</span>
+    <span class="comment">%     &gt;&gt; dims = struct('name', 'x', 'dim_type', 'linear', 'low', 0., 'high', 1.);</span>
+    <span class="comment">%     &gt;&gt; exp = tc.create_experiment('YOUR_EXPERIMENT_NAME', dims);</span>
+    <span class="comment">%</span>
+    <span class="comment">%     Alternatively, the Thor Client can be used to query for existing</span>
+    <span class="comment">%     experiments.</span>
+    <span class="comment">%</span>
+    <span class="comment">%     &gt;&gt; exp = tc.experiment_for_name('YOUR_EXISTING_EXPERIMENT');</span>
+    <span class="keyword">properties</span>
+        auth_token
+    <span class="keyword">end</span>
+    <span class="keyword">methods</span>
+        <span class="keyword">function</span> obj = ThorClient(auth_token)
+            <span class="comment">% Initialize the parameters of the Thor API client.</span>
+            obj.auth_token = auth_token;
+        <span class="keyword">end</span>
+        <span class="keyword">function</span> exp = create_experiment(obj, name, dimensions, acq_func,    <span class="keyword">...</span>
+                                         overwrite)
+            <span class="comment">% Create an experiment.</span>
+            <span class="comment">%</span>
+            <span class="comment">% Parameters:</span>
+            <span class="comment">%     name (str): String containing the name of the experiment</span>
+            <span class="comment">%         to create.</span>
+            <span class="comment">%     dimensions (list of structs): A list of structs that specify</span>
+            <span class="comment">%         the hyperparameters of the machine learning system. Each</span>
+            <span class="comment">%         dimension must specify the following four properties:</span>
+            <span class="comment">%             1. The name of the dimension, which key "name".</span>
+            <span class="comment">%             2. The type of dimension to create, which must be</span>
+            <span class="comment">%                one of "linear", "exponential", "logarithmic", or</span>
+            <span class="comment">%                "integer". This is specified by the key</span>
+            <span class="comment">%                "dim_type".</span>
+            <span class="comment">%             3. The minimum value of the dimension, specified</span>
+            <span class="comment">%                by the key "low".</span>
+            <span class="comment">%             4. The maximum value of the dimension, specified by</span>
+            <span class="comment">%                the key "high".</span>
+            <span class="comment">%     acq_func (optional, str): A string containing the name of the</span>
+            <span class="comment">%         acquisition function to use. This can be one of "hedge",</span>
+            <span class="comment">%         "upper_confidence_bound", "expected_improvement", or</span>
+            <span class="comment">%         "improvement_probability".</span>
+            <span class="comment">%     overwrite (optional, bool): An indicator variable which will</span>
+            <span class="comment">%         overwrite existing experiments with the given name if</span>
+            <span class="comment">%         they already exist on Thor Server.</span>
+            <span class="comment">% Returns:</span>
+            <span class="comment">%     ExperimentClient: A corresponding experiment with the</span>
+            <span class="comment">%         provided name and dimensions.</span>
+            <span class="keyword">if</span> nargin &lt; 5
+                <span class="comment">% By default do not overwrite experiments if they exist on the</span>
+                <span class="comment">% Thor server.</span>
+                overwrite = false;
+            <span class="keyword">end</span>
+            <span class="keyword">if</span> nargin &lt; 4
+                <span class="comment">% Make the specification of the acquisition function an</span>
+                <span class="comment">% optional parameter that defaults to the hedging strategy.</span>
+                acq_func = <span class="string">'hedge'</span>;
+            <span class="keyword">end</span>
+            options = weboptions(<span class="string">'ContentType'</span>, <span class="string">'json'</span>,                      <span class="keyword">...</span>
+                <span class="string">'MediaType'</span>, <span class="string">'application/json'</span>,                             <span class="keyword">...</span>
+                <span class="string">'RequestMethod'</span>, <span class="string">'POST'</span>);
+            url = base_url(<span class="string">'create_experiment'</span>);
+            data = struct(<span class="string">'name'</span>, name,                                      <span class="keyword">...</span>
+                <span class="string">'auth_token'</span>, obj.auth_token,                                <span class="keyword">...</span>
+                <span class="string">'acq_func'</span>, acq_func,                                        <span class="keyword">...</span>
+                <span class="string">'overwrite'</span>, overwrite,                                      <span class="keyword">...</span>
+                <span class="string">'dimensions'</span>, dimensions);
+            res = webwrite(url, data, options);
+            exp = ExperimentClient(res.id, res.name, res.date, <span class="keyword">...</span>
+                res.dimensions, obj.auth_token);
+        <span class="keyword">end</span>
+        <span class="keyword">function</span> exp = experiment_for_name(obj, name)
+            <span class="comment">% Get an experiment with a given name.</span>
+            <span class="comment">%</span>
+            <span class="comment">% Parameters:</span>
+            <span class="comment">%     name (str): String containing the name of the experiment</span>
+            <span class="comment">%         that should be obtained.</span>
+            <span class="comment">% Returns:</span>
+            <span class="comment">%     ExperimentClient: A corresponding experiment with the</span>
+            <span class="comment">%         provided name. The object returned by this method is</span>
+            <span class="comment">%         identical in functionality to the object that is</span>
+            <span class="comment">%         returned by the function "create_experiment".</span>
+            options = weboptions(<span class="string">'ContentType'</span>, <span class="string">'json'</span>,                      <span class="keyword">...</span>
+                <span class="string">'MediaType'</span>, <span class="string">'application/json'</span>,                             <span class="keyword">...</span>
+                <span class="string">'RequestMethod'</span>, <span class="string">'POST'</span>);
+            url = base_url(<span class="string">'experiment_for_name'</span>);
+            data = struct(<span class="string">'name'</span>, name,                                      <span class="keyword">...</span>
+                <span class="string">'auth_token'</span>, obj.auth_token);
+            res = webwrite(url, data, options);
+            exp = ExperimentClient(res.id, res.name, res.date,               <span class="keyword">...</span>
+                res.dimensions, obj.auth_token);
+        <span class="keyword">end</span>
+    <span class="keyword">end</span>
+<span class="keyword">end</span>
+</pre><p class="footer"><br><a href="http://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2017a</a><br></p></div><!--
+##### SOURCE BEGIN #####
+classdef ThorClient
+    % Thor Client Class
+    %
+    % The purpose of this module is to allow MATLAB users to utilize the Thor
+    % utility for Bayesian optimization of machine learning systems. This module
+    % in particular is intended to properly authenticate with Thor and to create
+    % experiments.
+    %
+    % Parameters:
+    %     auth_token (str): String containing a user's specific API key provided
+    %         by the Thor server. This is used to authenticate with the Thor
+    %         server as a handshake that these experiments belong to a user and
+    %         can be viewed and edited by them.
+    %
+    % Examples:
+    %     The Thor Client can be used to create experiments as follows:
+    %
+    %     >> tc = ThorClient('YOUR_API_KEY');
+    %     >> dims = struct('name', 'x', 'dim_type', 'linear', 'low', 0., 'high', 1.);
+    %     >> exp = tc.create_experiment('YOUR_EXPERIMENT_NAME', dims);
+    %
+    %     Alternatively, the Thor Client can be used to query for existing
+    %     experiments.
+    %
+    %     >> exp = tc.experiment_for_name('YOUR_EXISTING_EXPERIMENT');
+    properties
+        auth_token
+    end
+    methods
+        function obj = ThorClient(auth_token)
+            % Initialize the parameters of the Thor API client.
+            obj.auth_token = auth_token;
+        end
+        function exp = create_experiment(obj, name, dimensions, acq_func,    ...
+                                         overwrite)
+            % Create an experiment.
+            %
+            % Parameters:
+            %     name (str): String containing the name of the experiment
+            %         to create.
+            %     dimensions (list of structs): A list of structs that specify
+            %         the hyperparameters of the machine learning system. Each
+            %         dimension must specify the following four properties:
+            %             1. The name of the dimension, which key "name".
+            %             2. The type of dimension to create, which must be
+            %                one of "linear", "exponential", "logarithmic", or
+            %                "integer". This is specified by the key
+            %                "dim_type".
+            %             3. The minimum value of the dimension, specified
+            %                by the key "low".
+            %             4. The maximum value of the dimension, specified by
+            %                the key "high".
+            %     acq_func (optional, str): A string containing the name of the
+            %         acquisition function to use. This can be one of "hedge",
+            %         "upper_confidence_bound", "expected_improvement", or
+            %         "improvement_probability".
+            %     overwrite (optional, bool): An indicator variable which will
+            %         overwrite existing experiments with the given name if
+            %         they already exist on Thor Server.
+            % Returns:
+            %     ExperimentClient: A corresponding experiment with the
+            %         provided name and dimensions.
+            if nargin < 5
+                % By default do not overwrite experiments if they exist on the
+                % Thor server.
+                overwrite = false;
+            end
+            if nargin < 4
+                % Make the specification of the acquisition function an
+                % optional parameter that defaults to the hedging strategy.
+                acq_func = 'hedge';
+            end
+            options = weboptions('ContentType', 'json',                      ...
+                'MediaType', 'application/json',                             ...
+                'RequestMethod', 'POST');
+            url = base_url('create_experiment');
+            data = struct('name', name,                                      ...
+                'auth_token', obj.auth_token,                                ...
+                'acq_func', acq_func,                                        ...
+                'overwrite', overwrite,                                      ...
+                'dimensions', dimensions);
+            res = webwrite(url, data, options);
+            exp = ExperimentClient(res.id, res.name, res.date, ...
+                res.dimensions, obj.auth_token);
+        end
+        function exp = experiment_for_name(obj, name)
+            % Get an experiment with a given name.
+            %
+            % Parameters:
+            %     name (str): String containing the name of the experiment
+            %         that should be obtained.
+            % Returns:
+            %     ExperimentClient: A corresponding experiment with the
+            %         provided name. The object returned by this method is
+            %         identical in functionality to the object that is
+            %         returned by the function "create_experiment".
+            options = weboptions('ContentType', 'json',                      ...
+                'MediaType', 'application/json',                             ...
+                'RequestMethod', 'POST');
+            url = base_url('experiment_for_name');
+            data = struct('name', name,                                      ...
+                'auth_token', obj.auth_token);
+            res = webwrite(url, data, options);
+            exp = ExperimentClient(res.id, res.name, res.date,               ...
+                res.dimensions, obj.auth_token);
+        end
+    end
+end
+
+##### SOURCE END #####
+--></body></html>

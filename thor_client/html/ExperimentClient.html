@@ -1,0 +1,442 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>ExperimentClient</title><meta name="generator" content="MATLAB 9.2"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2017-05-01"><meta name="DC.source" content="ExperimentClient.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; } 
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, code { font-size:12px; }
+tt { font-size: 1.2em; }
+pre { margin:0px 0px 20px; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+pre.error { color:red; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+.footer a { color:#878787; }
+.footer a:hover { color:#878787; text-decoration:underline; }
+.footer a:visited { color:#878787; }
+
+table th { padding:7px 5px; text-align:left; vertical-align:middle; border: 1px solid #d6d4d4; font-weight:bold; }
+table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px solid #d6d4d4; }
+
+
+
+
+
+  </style></head><body><div class="content"><pre class="codeinput"><span class="keyword">classdef</span> ExperimentClient
+    <span class="comment">% Experiment Client Class</span>
+    <span class="comment">%</span>
+    <span class="comment">% This object defines a Thor experiment within the Python environment.</span>
+    <span class="comment">% In particular, an experiment is defined by its name, the date at</span>
+    <span class="comment">% which it was created, and the dimensions of the machine learning</span>
+    <span class="comment">% model. Moreover, an authentication token is required for requesting</span>
+    <span class="comment">% new parameter configurations, for submitting observations of</span>
+    <span class="comment">% parameters, for viewing pending parameter configurations and for</span>
+    <span class="comment">% obtaining the best configuration of parameters that has been</span>
+    <span class="comment">% evaluated so far.</span>
+    <span class="comment">%</span>
+    <span class="comment">%</span>
+    <span class="comment">% Parameters:</span>
+    <span class="comment">%     identifier (int): A unique identifier that indicates which experiment</span>
+    <span class="comment">%         on the server-side is being interacted with by the client.</span>
+    <span class="comment">%     name (str): A name for the machine learning experiment. Consumers</span>
+    <span class="comment">%         of the Thor service must have unique experiment names, so</span>
+    <span class="comment">%         make sure all of your experiments are named different things!</span>
+    <span class="comment">%     date (datetime): The datetime at which the experiment was created</span>
+    <span class="comment">%         on the server side.</span>
+    <span class="comment">%     dims (list of structs): A list of structs describing the</span>
+    <span class="comment">%         parameter space of the optimization problem. Each dimension</span>
+    <span class="comment">%         is given a name, a maximum value, a minimum value, and a</span>
+    <span class="comment">%         dimension type that roughly describes how points are spaced.</span>
+    <span class="keyword">properties</span>
+        experiment_id
+        name
+        date
+        dims
+        auth_token
+    <span class="keyword">end</span>
+    <span class="keyword">methods</span>
+        <span class="keyword">function</span> obj = ExperimentClient(identifier, name, date, dims, <span class="keyword">...</span>
+                auth_token)
+            <span class="comment">% Initialize parameters of the experiment client object.</span>
+            obj.experiment_id = identifier;
+            obj.name = name;
+            obj.date = date;
+            obj.dims = dims;
+            obj.auth_token = auth_token;
+        <span class="keyword">end</span>
+        <span class="keyword">function</span> res = submit_observation(obj, config, target)
+            <span class="comment">% Upload a pairing of a configuration alongside an observed</span>
+            <span class="comment">% target variable.</span>
+            <span class="comment">%</span>
+            <span class="comment">% Parameters:</span>
+            <span class="comment">%     config (struct): A struct mapping dimension names to</span>
+            <span class="comment">%         values indicating the configuration of parameters.</span>
+            <span class="comment">%     target (float): A number indicating the performance of</span>
+            <span class="comment">%         this configuration of model parameters.</span>
+            <span class="comment">% Examples:</span>
+            <span class="comment">%</span>
+            <span class="comment">%     This utility is helpful in the event that a machine</span>
+            <span class="comment">%     learning practitioner already has a few existing</span>
+            <span class="comment">%     evaluations of the system at given inputs. For instance,</span>
+            <span class="comment">%     the consumer may have already performed a grid search to</span>
+            <span class="comment">%     obtain parameter values. Suppose that a particular</span>
+            <span class="comment">%     experiment has two dimensions named "x" and "y". Then to</span>
+            <span class="comment">%     upload a configuration to the Thor server, we proceed as</span>
+            <span class="comment">%     follows:</span>
+            <span class="comment">%</span>
+            <span class="comment">%     &gt;&gt; d = struct('x', 1.5, 'y', 3.1);</span>
+            <span class="comment">%     &gt;&gt; v = f(d.x, d.y);</span>
+            <span class="comment">%     &gt;&gt; exp.submit_observation(d, v);</span>
+            json_config = jsonencode(config);
+            options = weboptions(<span class="string">'ContentType'</span>, <span class="string">'json'</span>,                      <span class="keyword">...</span>
+                <span class="string">'MediaType'</span>, <span class="string">'application/json'</span>,                             <span class="keyword">...</span>
+                <span class="string">'RequestMethod'</span>, <span class="string">'POST'</span>,                                     <span class="keyword">...</span>
+                <span class="string">'Timeout'</span>, 180);
+            url = base_url(<span class="string">'submit_observation'</span>);
+            data = struct(<span class="string">'auth_token'</span>, obj.auth_token,                      <span class="keyword">...</span>
+                <span class="string">'configuration'</span>, json_config,                                <span class="keyword">...</span>
+                <span class="string">'target'</span>, target,                                            <span class="keyword">...</span>
+                <span class="string">'experiment_id'</span>, obj.experiment_id);
+            res = webwrite(url, data, options);
+        <span class="keyword">end</span>
+        <span class="keyword">function</span> rec = create_recommendation(obj, rand_prob, n_model_iters)
+            <span class="comment">% Create a recommendation for a point to evaluate next.</span>
+            <span class="comment">%</span>
+            <span class="comment">% The create recommendation utility represents the core of the</span>
+            <span class="comment">% Thor Bayesian optimization software. This function will</span>
+            <span class="comment">% contact the Thor server and request a new configuration of</span>
+            <span class="comment">% machine learning parameters that serve the object of</span>
+            <span class="comment">% maximizing the metric of interest.</span>
+            <span class="comment">%</span>
+            <span class="comment">% Parameters:</span>
+            <span class="comment">%     rand_prob (optional, float): This parameter represents</span>
+            <span class="comment">%         that a random point in the input space is chosen</span>
+            <span class="comment">%         instead of selecting a configuration of parameters</span>
+            <span class="comment">%         using Bayesian optimization. As such, this parameter</span>
+            <span class="comment">%         can be used to benchmark against random search and</span>
+            <span class="comment">%         otherwise to perform pure exploration of the</span>
+            <span class="comment">%         parameter space.</span>
+            <span class="comment">%     n_model_iters (optional, int): This parameter determines the number</span>
+            <span class="comment">%         of maximum likelihood random restarts are used to</span>
+            <span class="comment">%         isolate the maximum of the Gaussian process</span>
+            <span class="comment">%         likelihood with respect to the kernel parameters.</span>
+            <span class="comment">%         Setting this to a large value will generally provide</span>
+            <span class="comment">%         better probabilistic interpolants of the metric as a</span>
+            <span class="comment">%         function of the model parameters. In large-scale</span>
+            <span class="comment">%         problems, this parameter instead controls the number</span>
+            <span class="comment">%         of training iterations used to fit a Bayesian neural</span>
+            <span class="comment">%         network. In particular, 1,000 times this parameter</span>
+            <span class="comment">%         epochs are performed.</span>
+            <span class="comment">%</span>
+            <span class="comment">% Returns:</span>
+            <span class="comment">%     RecommendationClient: A recommendation client object</span>
+            <span class="comment">%         corresponding to the recommended set of parameters.</span>
+            <span class="keyword">if</span> nargin &lt; 3
+                <span class="comment">% Make the number of model parameters null if it is not</span>
+                <span class="comment">% provided.</span>
+                n_model_iters = string(nan);
+            <span class="keyword">end</span>
+            <span class="keyword">if</span> nargin &lt; 2
+                <span class="comment">% Make the probability of randomly choosing a configuration</span>
+                <span class="comment">% to evaluate null if it is not provided.</span>
+                rand_prob = string(nan);
+            <span class="keyword">end</span>
+            options = weboptions(<span class="string">'ContentType'</span>, <span class="string">'json'</span>,                      <span class="keyword">...</span>
+                <span class="string">'MediaType'</span>, <span class="string">'application/json'</span>,                             <span class="keyword">...</span>
+                <span class="string">'RequestMethod'</span>, <span class="string">'POST'</span>,                                     <span class="keyword">...</span>
+                <span class="string">'Timeout'</span>, 180);
+            url = base_url(<span class="string">'create_recommendation'</span>);
+            data = struct(<span class="string">'auth_token'</span>, obj.auth_token,                      <span class="keyword">...</span>
+                <span class="string">'experiment_id'</span>, obj.experiment_id,                          <span class="keyword">...</span>
+                <span class="string">'rand_prob'</span>, rand_prob,                                      <span class="keyword">...</span>
+                <span class="string">'n_model_iters'</span>, n_model_iters);
+            res = webwrite(url, data, options);
+            rec = RecommendationClient(res.id, jsondecode(res.config),       <span class="keyword">...</span>
+                obj.auth_token);
+        <span class="keyword">end</span>
+        <span class="keyword">function</span> res = best_configuration(obj)
+            <span class="comment">% Get the configuration of parameters that produced the best</span>
+            <span class="comment">% value of the object function.</span>
+            <span class="comment">%</span>
+            <span class="comment">% Returns:</span>
+            <span class="comment">%     struct: A struct containing a detailed view of the</span>
+            <span class="comment">%         configuration of model parameters that produced the</span>
+            <span class="comment">%         maximal  value of the metric. This includes the date</span>
+            <span class="comment">%         the observation was created, the value of the metric,</span>
+            <span class="comment">%         and the configuration itself.</span>
+            options = weboptions(<span class="string">'ContentType'</span>, <span class="string">'json'</span>,                      <span class="keyword">...</span>
+                <span class="string">'MediaType'</span>, <span class="string">'application/json'</span>,                             <span class="keyword">...</span>
+                <span class="string">'RequestMethod'</span>, <span class="string">'POST'</span>,                                     <span class="keyword">...</span>
+                <span class="string">'Timeout'</span>, 180);
+            url = base_url(<span class="string">'best_configuration'</span>);
+            data = struct(<span class="string">'auth_token'</span>, obj.auth_token,                      <span class="keyword">...</span>
+                <span class="string">'experiment_id'</span>, obj.experiment_id);
+            res = webwrite(url, data, options);
+        <span class="keyword">end</span>
+        <span class="keyword">function</span> pending = pending_recommendations(obj)
+            <span class="comment">% Query for pending recommendations that have yet to be</span>
+            <span class="comment">% evaluated.</span>
+            <span class="comment">%</span>
+            <span class="comment">% Sometimes client-side computations may fail for a given input</span>
+            <span class="comment">% configuration of model parameters, leaving the recommendation</span>
+            <span class="comment">% in a kind of "limbo" state in which is not being evaluated</span>
+            <span class="comment">% but still exists. In this case, it can be advantageous for</span>
+            <span class="comment">% the client to query for such pending observations and to</span>
+            <span class="comment">% evaluate them. This function returns a list of pending</span>
+            <span class="comment">% recommendations which can then be evaluated by the client.</span>
+            <span class="comment">%</span>
+            <span class="comment">% Returns:</span>
+            <span class="comment">%     list of RecommendationClient: A list of recommendation</span>
+            <span class="comment">%         client objects, where each element in the list</span>
+            <span class="comment">%         corresponds to a pending observation.</span>
+            options = weboptions(<span class="string">'ContentType'</span>, <span class="string">'json'</span>,                      <span class="keyword">...</span>
+                <span class="string">'MediaType'</span>, <span class="string">'application/json'</span>,                             <span class="keyword">...</span>
+                <span class="string">'RequestMethod'</span>, <span class="string">'POST'</span>,                                     <span class="keyword">...</span>
+                <span class="string">'Timeout'</span>, 180);
+            url = base_url(<span class="string">'pending_recommendations'</span>);
+            data = struct(<span class="string">'auth_token'</span>, obj.auth_token,                      <span class="keyword">...</span>
+                <span class="string">'experiment_id'</span>, obj.experiment_id);
+            res = webwrite(url, data, options);
+            n_pending = length(res);
+            pending = cell(n_pending, 1);
+            <span class="keyword">for</span> i = 1:n_pending
+                pending{i} = RecommendationClient(res(i).id,                 <span class="keyword">...</span>
+                    jsondecode(res(i).config),                               <span class="keyword">...</span>
+                    obj.auth_token);
+            <span class="keyword">end</span>
+        <span class="keyword">end</span>
+    <span class="keyword">end</span>
+<span class="keyword">end</span>
+</pre><p class="footer"><br><a href="http://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2017a</a><br></p></div><!--
+##### SOURCE BEGIN #####
+classdef ExperimentClient
+    % Experiment Client Class
+    %
+    % This object defines a Thor experiment within the Python environment.
+    % In particular, an experiment is defined by its name, the date at
+    % which it was created, and the dimensions of the machine learning
+    % model. Moreover, an authentication token is required for requesting
+    % new parameter configurations, for submitting observations of
+    % parameters, for viewing pending parameter configurations and for
+    % obtaining the best configuration of parameters that has been
+    % evaluated so far.
+    %
+    %
+    % Parameters:
+    %     identifier (int): A unique identifier that indicates which experiment
+    %         on the server-side is being interacted with by the client.
+    %     name (str): A name for the machine learning experiment. Consumers
+    %         of the Thor service must have unique experiment names, so
+    %         make sure all of your experiments are named different things!
+    %     date (datetime): The datetime at which the experiment was created
+    %         on the server side.
+    %     dims (list of structs): A list of structs describing the
+    %         parameter space of the optimization problem. Each dimension
+    %         is given a name, a maximum value, a minimum value, and a
+    %         dimension type that roughly describes how points are spaced.
+    properties
+        experiment_id
+        name
+        date
+        dims
+        auth_token
+    end
+    methods
+        function obj = ExperimentClient(identifier, name, date, dims, ...
+                auth_token)
+            % Initialize parameters of the experiment client object.
+            obj.experiment_id = identifier;
+            obj.name = name;
+            obj.date = date;
+            obj.dims = dims;
+            obj.auth_token = auth_token;
+        end
+        function res = submit_observation(obj, config, target)
+            % Upload a pairing of a configuration alongside an observed
+            % target variable.
+            %
+            % Parameters:
+            %     config (struct): A struct mapping dimension names to
+            %         values indicating the configuration of parameters.
+            %     target (float): A number indicating the performance of
+            %         this configuration of model parameters.
+            % Examples:
+            %
+            %     This utility is helpful in the event that a machine
+            %     learning practitioner already has a few existing
+            %     evaluations of the system at given inputs. For instance,
+            %     the consumer may have already performed a grid search to
+            %     obtain parameter values. Suppose that a particular
+            %     experiment has two dimensions named "x" and "y". Then to
+            %     upload a configuration to the Thor server, we proceed as
+            %     follows:
+            %
+            %     >> d = struct('x', 1.5, 'y', 3.1);
+            %     >> v = f(d.x, d.y);
+            %     >> exp.submit_observation(d, v);
+            json_config = jsonencode(config);
+            options = weboptions('ContentType', 'json',                      ...
+                'MediaType', 'application/json',                             ...
+                'RequestMethod', 'POST',                                     ...
+                'Timeout', 180);
+            url = base_url('submit_observation');
+            data = struct('auth_token', obj.auth_token,                      ...
+                'configuration', json_config,                                ...
+                'target', target,                                            ...
+                'experiment_id', obj.experiment_id);
+            res = webwrite(url, data, options);
+        end
+        function rec = create_recommendation(obj, rand_prob, n_model_iters)
+            % Create a recommendation for a point to evaluate next.
+            %
+            % The create recommendation utility represents the core of the
+            % Thor Bayesian optimization software. This function will
+            % contact the Thor server and request a new configuration of
+            % machine learning parameters that serve the object of
+            % maximizing the metric of interest.
+            %
+            % Parameters:
+            %     rand_prob (optional, float): This parameter represents
+            %         that a random point in the input space is chosen
+            %         instead of selecting a configuration of parameters
+            %         using Bayesian optimization. As such, this parameter
+            %         can be used to benchmark against random search and
+            %         otherwise to perform pure exploration of the
+            %         parameter space.
+            %     n_model_iters (optional, int): This parameter determines the number
+            %         of maximum likelihood random restarts are used to
+            %         isolate the maximum of the Gaussian process
+            %         likelihood with respect to the kernel parameters.
+            %         Setting this to a large value will generally provide
+            %         better probabilistic interpolants of the metric as a
+            %         function of the model parameters. In large-scale
+            %         problems, this parameter instead controls the number
+            %         of training iterations used to fit a Bayesian neural
+            %         network. In particular, 1,000 times this parameter
+            %         epochs are performed.
+            %
+            % Returns:
+            %     RecommendationClient: A recommendation client object
+            %         corresponding to the recommended set of parameters.
+            if nargin < 3
+                % Make the number of model parameters null if it is not
+                % provided.
+                n_model_iters = string(nan);
+            end
+            if nargin < 2
+                % Make the probability of randomly choosing a configuration
+                % to evaluate null if it is not provided.
+                rand_prob = string(nan);
+            end
+            options = weboptions('ContentType', 'json',                      ...
+                'MediaType', 'application/json',                             ...
+                'RequestMethod', 'POST',                                     ...
+                'Timeout', 180);
+            url = base_url('create_recommendation');
+            data = struct('auth_token', obj.auth_token,                      ...
+                'experiment_id', obj.experiment_id,                          ...
+                'rand_prob', rand_prob,                                      ...
+                'n_model_iters', n_model_iters);
+            res = webwrite(url, data, options);
+            rec = RecommendationClient(res.id, jsondecode(res.config),       ...
+                obj.auth_token);
+        end
+        function res = best_configuration(obj)
+            % Get the configuration of parameters that produced the best
+            % value of the object function.
+            %
+            % Returns:
+            %     struct: A struct containing a detailed view of the
+            %         configuration of model parameters that produced the
+            %         maximal  value of the metric. This includes the date
+            %         the observation was created, the value of the metric,
+            %         and the configuration itself.
+            options = weboptions('ContentType', 'json',                      ...
+                'MediaType', 'application/json',                             ...
+                'RequestMethod', 'POST',                                     ...
+                'Timeout', 180);
+            url = base_url('best_configuration');
+            data = struct('auth_token', obj.auth_token,                      ...
+                'experiment_id', obj.experiment_id);
+            res = webwrite(url, data, options);
+        end
+        function pending = pending_recommendations(obj)
+            % Query for pending recommendations that have yet to be
+            % evaluated.
+            %
+            % Sometimes client-side computations may fail for a given input
+            % configuration of model parameters, leaving the recommendation
+            % in a kind of "limbo" state in which is not being evaluated
+            % but still exists. In this case, it can be advantageous for
+            % the client to query for such pending observations and to
+            % evaluate them. This function returns a list of pending
+            % recommendations which can then be evaluated by the client.
+            %
+            % Returns:
+            %     list of RecommendationClient: A list of recommendation
+            %         client objects, where each element in the list
+            %         corresponds to a pending observation.
+            options = weboptions('ContentType', 'json',                      ...
+                'MediaType', 'application/json',                             ...
+                'RequestMethod', 'POST',                                     ...
+                'Timeout', 180);
+            url = base_url('pending_recommendations');
+            data = struct('auth_token', obj.auth_token,                      ...
+                'experiment_id', obj.experiment_id);
+            res = webwrite(url, data, options);
+            n_pending = length(res);
+            pending = cell(n_pending, 1);
+            for i = 1:n_pending
+                pending{i} = RecommendationClient(res(i).id,                 ...
+                    jsondecode(res(i).config),                               ...
+                    obj.auth_token);
+            end
+        end
+    end
+end
+##### SOURCE END #####
+--></body></html>

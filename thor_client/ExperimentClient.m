@@ -23,6 +23,10 @@ classdef ExperimentClient
     %         parameter space of the optimization problem. Each dimension
     %         is given a name, a maximum value, a minimum value, and a
     %         dimension type that roughly describes how points are spaced.
+    %     auth_token (str): String containing a user's specific API key provided
+    %         by the Thor server. This is used to authenticate with the Thor
+    %         server as a handshake that these experiments belong to a user and
+    %         can be viewed and edited by them.
     properties
         experiment_id
         name

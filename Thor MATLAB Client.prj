@@ -1,0 +1,128 @@
+<deployment-project plugin="plugin.toolbox" plugin-version="1.0">
+  <configuration file="/Users/jbrofos/Desktop/MITRE/Projects/FY17/Thor/Thor-MATLAB-Client/Thor MATLAB Client.prj" location="/Users/jbrofos/Desktop/MITRE/Projects/FY17/Thor/Thor-MATLAB-Client" name="Thor MATLAB Client" target="target.toolbox" target-name="Package Toolbox">
+    <param.appname>Thor MATLAB Client</param.appname>
+    <param.authnamewatermark>James Brofos</param.authnamewatermark>
+    <param.email>james@brofos.org</param.email>
+    <param.company>The MITRE Corporation</param.company>
+    <param.summary />
+    <param.description />
+    <param.screenshot />
+    <param.version>1.0</param.version>
+    <param.output>${PROJECT_ROOT}/Thor MATLAB Client.mltbx</param.output>
+    <param.products.name />
+    <param.products.id />
+    <param.products.version />
+    <param.platforms />
+    <param.guid>9434dbde-c698-4417-a82d-62b2b23be71d</param.guid>
+    <param.exclude.filters />
+    <param.examples>&lt;?xml version="1.0" encoding="utf-8"?&gt;
+&lt;examples&gt;
+   &lt;exampleCategory name="thor_client"&gt;
+      &lt;example name="ExperimentClient" type="html"&gt;
+         &lt;file type="source"&gt;/html/ExperimentClient.html&lt;/file&gt;
+         &lt;file type="main"&gt;/ExperimentClient.m&lt;/file&gt;
+         &lt;file type="thumbnail"/&gt;
+      &lt;/example&gt;
+      &lt;example name="RecommendationClient" type="html"&gt;
+         &lt;file type="source"&gt;/html/RecommendationClient.html&lt;/file&gt;
+         &lt;file type="main"&gt;/RecommendationClient.m&lt;/file&gt;
+         &lt;file type="thumbnail"/&gt;
+      &lt;/example&gt;
+      &lt;example name="ThorClient" type="html"&gt;
+         &lt;file type="source"&gt;/html/ThorClient.html&lt;/file&gt;
+         &lt;file type="main"&gt;/ThorClient.m&lt;/file&gt;
+         &lt;file type="thumbnail"/&gt;
+      &lt;/example&gt;
+      &lt;example name="base_url" type="html"&gt;
+         &lt;file type="source"&gt;/html/base_url.html&lt;/file&gt;
+         &lt;file type="main"&gt;/base_url.m&lt;/file&gt;
+         &lt;file type="thumbnail"/&gt;
+      &lt;/example&gt;
+   &lt;/exampleCategory&gt;
+&lt;/examples&gt;</param.examples>
+    <param.demosxml />
+    <param.apps />
+    <param.docs>${PROJECT_ROOT}/thor_client/info.xml</param.docs>
+    <param.matlabpath.excludes />
+    <param.javaclasspath.excludes />
+    <unset>
+      <param.summary />
+      <param.description />
+      <param.screenshot />
+      <param.version />
+      <param.output />
+      <param.products.name />
+      <param.products.id />
+      <param.products.version />
+      <param.platforms />
+      <param.exclude.filters />
+      <param.demosxml />
+      <param.apps />
+      <param.matlabpath.excludes />
+      <param.javaclasspath.excludes />
+    </unset>
+    <fileset.rootdir>
+      <file>${PROJECT_ROOT}/thor_client</file>
+    </fileset.rootdir>
+    <fileset.rootfiles>
+      <file>${PROJECT_ROOT}/thor_client/ExperimentClient.m</file>
+      <file>${PROJECT_ROOT}/thor_client/RecommendationClient.m</file>
+      <file>${PROJECT_ROOT}/thor_client/ThorClient.m</file>
+      <file>${PROJECT_ROOT}/thor_client/base_url.m</file>
+      <file>${PROJECT_ROOT}/thor_client/demos.xml</file>
+      <file>${PROJECT_ROOT}/thor_client/html</file>
+      <file>${PROJECT_ROOT}/thor_client/info.xml</file>
+    </fileset.rootfiles>
+    <fileset.depfun.included />
+    <fileset.depfun.excluded />
+    <fileset.package />
+    <build-deliverables>
+      <file location="/Users/jbrofos/Desktop/MITRE/Projects/FY17/Thor/Thor-MATLAB-Client" name="Thor MATLAB Client.mltbx" optional="false">/Users/jbrofos/Desktop/MITRE/Projects/FY17/Thor/Thor-MATLAB-Client/Thor MATLAB Client.mltbx</file>
+    </build-deliverables>
+    <workflow />
+    <matlab>
+      <root>/Applications/MATLAB_R2017a.app</root>
+      <toolboxes>
+        <toolbox name="fixedpoint" />
+        <toolbox name="matlabcoder" />
+        <toolbox name="embeddedcoder" />
+        <toolbox name="polyspacebugfinder" />
+      </toolboxes>
+      <toolbox>
+        <fixedpoint>
+          <enabled>true</enabled>
+        </fixedpoint>
+      </toolbox>
+      <toolbox>
+        <matlabcoder>
+          <enabled>true</enabled>
+        </matlabcoder>
+      </toolbox>
+      <toolbox>
+        <embeddedcoder>
+          <enabled>true</enabled>
+        </embeddedcoder>
+      </toolbox>
+      <toolbox>
+        <polyspacebugfinder>
+          <enabled>true</enabled>
+        </polyspacebugfinder>
+      </toolbox>
+    </matlab>
+    <platform>
+      <unix>true</unix>
+      <mac>true</mac>
+      <windows>false</windows>
+      <win2k>false</win2k>
+      <winxp>false</winxp>
+      <vista>false</vista>
+      <linux>false</linux>
+      <solaris>false</solaris>
+      <osver>10.12.4</osver>
+      <os32>false</os32>
+      <os64>true</os64>
+      <arch>maci64</arch>
+      <matlab>true</matlab>
+    </platform>
+  </configuration>
+</deployment-project>
