@@ -1,6 +1,3 @@
-% Link to the Thor MATLAB client.
-addpath(genpath('../../thor_client/'))
-
 % Authenticate with the Thor server.
 auth_token = 'YOUR_AUTH_TOKEN';
 tc = ThorClient(auth_token);
