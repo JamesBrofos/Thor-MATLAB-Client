@@ -5,5 +5,5 @@ This repository contains the Thor MATLAB Client, which is a client-side interfac
 ## Installation
 
 1. Clone this repository. `git clone git@github.com:JamesBrofos/Thor-MATLAB-Client.git`
-2. Add the Thor MATLAB Client to the MATLAB path: `addpath(genpath('path/to/Thor-MATLAB-Client-master/thor_client/'));`.
+2. Double click on the `Thor MATLAB Client.mltbx` file and install the toolbox via the dialogue box that appears.
 3. Make sure you have signed up for an account with Thor.
