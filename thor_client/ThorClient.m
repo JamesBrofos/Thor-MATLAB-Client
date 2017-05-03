@@ -104,5 +104,50 @@ classdef ThorClient
             exp = ExperimentClient(res.id, res.name, res.date, ...
                 res.dimensions, obj.auth_token);
         end
+        function exp = for_name_or_create(obj, name, dims, acq_func, overwrite)
+            % Query for an experiment and return it if it exists. Otherwise, if
+            % the experiment does not exist, create it.
+            %
+            % Parameters:
+            %     name (str): String containing the name of the experiment
+            %         to create.
+            %     dimensions (list of structs): A list of structs that specify
+            %         the hyperparameters of the machine learning system. Each
+            %         dimension must specify the following four properties:
+            %             1. The name of the dimension, which key "name".
+            %             2. The type of dimension to create, which must be
+            %                one of "linear", "exponential", "logarithmic", or
+            %                "integer". This is specified by the key
+            %                "dim_type".
+            %             3. The minimum value of the dimension, specified
+            %                by the key "low".
+            %             4. The maximum value of the dimension, specified by
+            %                the key "high".
+            %     acq_func (optional, str): A string containing the name of the
+            %         acquisition function to use. This can be one of "hedge",
+            %         "upper_confidence_bound", "expected_improvement", or
+            %         "improvement_probability".
+            %     overwrite (optional, bool): An indicator variable which will
+            %         overwrite existing experiments with the given name if
+            %         they already exist on Thor Server.
+            % Returns:
+            %     ExperimentClient: A corresponding experiment with the
+            %         provided name and dimensions.
+          try
+              exp = obj.experiment_for_name(name)
+          catch
+            if nargin < 5
+                  % By default do not overwrite experiments if they exist on the
+                  % Thor server.
+              overwrite = false;
+            end
+            if nargin < 4
+                     % Make the specification of the acquisition function an
+                     % optional parameter that defaults to the hedging strategy.
+              acq_func = 'hedge';
+            end
+              exp = obj.create_experiment(name, dims, acq_func, overwrite)
+          end
+        end
     end
 end
